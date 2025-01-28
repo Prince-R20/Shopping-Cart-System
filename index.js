@@ -2,6 +2,11 @@
 let store;
 let total = 0;
 
+//getting ui elements
+const shelf = document.getElementById("shelf");
+const Uicart = document.getElementById("cart");
+const cartBox = document.getElementById("cartBox")
+
 const cart = []; // an empty cart
 
 //fectching data from fakestore api
@@ -19,42 +24,106 @@ async function getStoreData(){
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+
     store = await getStoreData(); //save the api data here
-    //console.log(store)
-    //displayItems()
-    addItem("Opna Women's Short Sleeve Moisture");
-    addItem("Samsung 49-Inch CHG90 144Hz Curved Gaming Monitor (LC49HG90DMNXZA) – Super Ultrawide Screen QLED ")
-    addItem("Acer SB220Q bi 21.5 inches Full HD (1920 x 1080) IPS Ultra-Thin")
-    addItem("MBJ Women's Solid Short Sleeve Boat Neck V ");
-    addItem('Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops')
-    showCartItem()
-    totalCost();
-    removeItem('Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops')
-    removeItem(2)
+    displayItems()
 })
 
+if(cart.length == 0){
+    document.getElementById("Info").textContent = "Your cart is empty. Purchase a merchanendise";
+}
 //function to display all items
 function displayItems(){
     store.forEach(item => {
-        console.log(`Title: ${item.title} Price: $${item.price}`)
+        item.qty = 1
+        createElement(item.image, item.title, item.price)
     })
 };
+//create each item ui component
+function createElement(image, head, amount){
+    const divContainer = document.createElement("div");
+    const divImg = document.createElement("div");
+    const title = document.createElement("p");
+    const price = document.createElement("p");
+    const button = document.createElement("button");
+
+    divContainer.className = "anItem"
+    divImg.className = "itemImg";
+    title.className = "itemName";
+    price.className = "price";
+
+    title.textContent = head;
+    price.textContent = `$${amount}`
+    button.textContent = `Add to Cart 🛒`
+
+    button.addEventListener("click", () => {
+        addItem(head);
+    })
+
+    divImg.style.backgroundImage = `url("${image}")`
+
+    divContainer.appendChild(divImg);
+    divContainer.appendChild(title);
+    divContainer.appendChild(price);
+    divContainer.appendChild(button);
+    shelf.appendChild(divContainer);
+}
+
+//creating elements for cart ui
+function createAnotherElement(image, head, pricing,qty){
+    const divContainer = document.createElement("div");
+    const divImg = document.createElement("div");
+    const title = document.createElement("p");
+    const quantity = document.createElement("p");
+    const button = document.createElement("button");
+
+    title.innerHTML = `${head} <br> <span class="itemPrice">$${pricing}</span>`;
+    divImg.style.backgroundImage = `url("${image}")`;
+    quantity.innerHTML = `QTY: <span id="${head}">${qty}</span>`;
+    button.textContent = "Remove";
+
+    divContainer.className = "divContainer";
+    divImg.className = "itemImg"
+    button.className="removeBtn"
+    quantity.className= "quantity";
+
+    button.addEventListener("click", removeItem())
+
+    divContainer.append(divImg);
+    divContainer.append(title);
+    divContainer.append(quantity);
+    divContainer.append(button);
+    Uicart.append(divContainer);
+}
 
 //function to add items to cart
 function addItem(name){
+    // Cghange the empty cart message to indicate there are now items
+    if(cart.length == 0){
+        document.getElementById("Info").textContent = "Here are the items in your cart;"
+    }
+
+    // iterating through the items to see if the item clicked  is available
     const item = store.find(item => {
         if(item.title == name){
             return item;
         }
     });
 
-    switch (item != undefined) {
-        case true:
-            cart.push(item)
-            break;
-        case false:
-            console.log(`Item: ${name} not found`)
-            break;
+    if(item != undefined){
+        const itemCart = cart.find(item => {
+            if(name == item.title){
+                return item
+            }
+        })
+        if(itemCart != undefined){
+            const qty = document.getElementById(`${name}`);
+            itemCart.qty++
+            qty.textContent = itemCart.qty;
+        }else{
+            cart.push(item);
+            createAnotherElement(item.image, item.title, item.price, item.qty);
+        }
     }
 }
 

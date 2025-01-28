@@ -3,9 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dev Mall</title>
+    <title>Royalty Boutique</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <h1>Welcome to Royalty Boutique</h1>
+        <p>Let's dress you to rule your world</p>
+    </header>
+    <section id="menu">
+        <span id="searchTool"><input type="search" id="searchInp" placeholder="Search product, brand and categories">
+            <button id="searchBtn">🔍</button></span>
+        <button>🛒 Cart <span id="cartCount">0</span></button>
+        <span id="avater">🤴</span>
+    </section>
+    <main>
+        <article id="shelf">
+        </article>
+        <article id="cartContainer">
+            <div id="cartBox">
+                <h2>🛒Shopping Cart</h2>
+                <hr>
+                <p id="Info"></p>
+                <article id="cart"></article>
+            </div>
+        </article>
+    </main>
+
     <script src="index.js"></script>
 </body>
 </html>
