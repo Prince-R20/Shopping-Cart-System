@@ -16,9 +16,12 @@ body{
 
 main{
     display: grid;
-    grid-template-columns: 1fr 0.25fr;
     padding: 10px;
     gap: 15px;
+
+    @media (width > 800px) {
+        grid-template-columns: 1fr 0.25fr;
+    }
 }
 
 header{
@@ -56,7 +59,11 @@ header p{
     border: none;
     padding: 10px 20px;
     border-radius: 10px;
-    width: 30%;
+    width: 100%;
+
+    @media (width > 800px) {
+        width: 30%;
+    }
 }
 
 button{
@@ -85,9 +92,14 @@ button:hover{
     padding: 10px 12px;
     font-size: 2rem;
     position: absolute;
-    top: 40px;
+    top: 10px;
     right: 10px;
     background-color: white;
+
+    @media (width > 800px) {
+        top: 40px;
+        right: 10px;
+    }
 }
 #shelf{
     display: flex;
@@ -104,8 +116,12 @@ button:hover{
     border-radius: 20px;
     padding: 10px 15px;
     place-items: center;
-    grid-template-rows: 300px 90px 50px auto;
     transition: 250ms;
+    grid-template-rows: 100px 80px 50px auto;
+
+    @media (width > 800px) {
+        grid-template-rows: 250px 90px 50px auto;
+    }
 }
 .anItem:hover{
     transform: scale(1.05);
@@ -185,4 +201,10 @@ img{
     width: 100%;
     padding: 10px;
     display:none;
+}
+
+.hide{
+    position: absolute;
+    top: -1000000px;
+    background-color: red;
 }

@@ -194,3 +194,7 @@ function totalCost(){
 function checkOut(){
     window.alert(`You have successful purchase merch worth $${total}. Thank you for your patronage`)
 }
+
+function showCart(){
+    shelf.classList.toggle("hide")
+}

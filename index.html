@@ -14,7 +14,7 @@
     <section id="menu">
         <span id="searchTool"><input type="search" id="searchInp" placeholder="Search product, brand and categories">
             <button id="searchBtn">🔍</button></span>
-        <button>🛒 Cart <span id="cartCount">0</span></button>
+        <button onclick="showCart()">🛒 Cart <span id="cartCount">0</span></button>
         <span id="avater">🤴</span>
     </section>
     <main>
@@ -27,7 +27,7 @@
                 <p id="Info"></p>
                 <article id="cart"></article>
             </div>
-            <button id="Checkout" onclick="checkOut()">Checkout <span id="total"></span></button>
+            <button id="Checkout" onclick="checkOut">Checkout <span id="total"></span></button>
         </article>
     </main>
 
