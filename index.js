@@ -5,7 +5,9 @@ let total = 0;
 //getting ui elements
 const shelf = document.getElementById("shelf");
 const Uicart = document.getElementById("cart");
-const cartBox = document.getElementById("cartBox")
+const cartBox = document.getElementById("cartBox");
+const totalelement = document.getElementById("total");
+const cartCount  = document.getElementById("cartCount");
 
 const cart = []; // an empty cart
 
@@ -114,6 +116,7 @@ function addItem(name){
     // Cghange the empty cart message to indicate there are now items
     if(cart.length == 0){
         document.getElementById("Info").textContent = "Here are the items in your cart;"
+        document.getElementById("Checkout").style.display = "block";
     }
 
     // iterating through the items to see if the item clicked  is available
@@ -133,11 +136,14 @@ function addItem(name){
             const qty = document.getElementById(`${name}`);
             itemCart.qty++
             qty.textContent = itemCart.qty;
+            totalCost()
         }else{
             cart.push(item);
             createAnotherElement(item.image, item.title, item.price, item.qty);
+            totalCost()
         }
     }
+    cartCount.textContent = cart.length;
 }
 
 //function to remove item from cart
@@ -145,39 +151,46 @@ function removeItem(search){
     const itemIndex = cart.findIndex(item => {
         if(item.title == search){return true}})
         
-    cart.splice(itemIndex, 1);
-    totalCost();
-
-    if(cart.length == 0){
-        document.getElementById("Info").textContent = "Your cart is empty. Purchase a merchandize"
-    }
     cart.forEach(item => {
         if(item.qty == 1){
             removeItemfromUI(search)
+            cart.splice(itemIndex, 1);
+        }else if(item.qty > 1){
+            const qty = document.getElementById(`${search}`);
+            item.qty--
+            qty.textContent = item.qty;
         }
     })
-
+    totalCost()
+    if(cart.length == 0){
+        document.getElementById("Info").textContent = "Your cart is empty. Purchase a merchandize"
+        document.getElementById("Checkout").style.display = "none";
+    }
+    cartCount.textContent = cart.length;
 }
 
 function removeItemfromUI(deletingItem){
     const cartt = document.getElementById("cart")
     const itemracks = document.querySelectorAll(".divContainer");
-    console.log(cart)
+
     itemracks.forEach(itemrack => {
         if(itemrack.id == deletingItem+"container"){
-            console.log(itemrack.id)
             cartt.removeChild(itemrack)
         }
     })
 }
 
-
 //function to calculate total cost
 function totalCost(){
     total = 0;
     cart.forEach(item => {
-        total += item.price
-        total = Number(total.toFixed(2))
+        total += item.price * item.qty
+        total = Number(total.toFixed(2));
     })
-    console.log(`%ctotal: $${total}`, `background-color: red; color: white;`)
+    totalelement.textContent = `$${total}`
+}
+
+//checkout function
+function checkOut(){
+    window.alert(`You have successful purchase merch worth $${total}. Thank you for your patronage`)
 }
