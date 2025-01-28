@@ -24,8 +24,15 @@ async function getStoreData(){
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-
-    store = await getStoreData(); //save the api data here
+    try {
+        store = await getStoreData(); //save the api data here
+        if(store != undefined){
+            localStorage.setItem("store", JSON.stringify(await store))
+        }
+    } catch (error) {
+        console.error(error)
+    }
+    
     displayItems()
 })
 
@@ -34,6 +41,8 @@ if(cart.length == 0){
 }
 //function to display all items
 function displayItems(){
+    store = JSON.parse(localStorage.getItem("store"))
+    
     store.forEach(item => {
         item.qty = 1
         createElement(item.image, item.title, item.price)
@@ -45,7 +54,7 @@ function createElement(image, head, amount){
     const divImg = document.createElement("div");
     const title = document.createElement("p");
     const price = document.createElement("p");
-    const button = document.createElement("button");
+    const buttons = document.createElement("button");
 
     divContainer.className = "anItem"
     divImg.className = "itemImg";
@@ -54,9 +63,9 @@ function createElement(image, head, amount){
 
     title.textContent = head;
     price.textContent = `$${amount}`
-    button.textContent = `Add to Cart 🛒`
+    buttons.textContent = `Add to Cart 🛒`
 
-    button.addEventListener("click", () => {
+    buttons.addEventListener("click", () => {
         addItem(head);
     })
 
@@ -65,7 +74,7 @@ function createElement(image, head, amount){
     divContainer.appendChild(divImg);
     divContainer.appendChild(title);
     divContainer.appendChild(price);
-    divContainer.appendChild(button);
+    divContainer.appendChild(buttons);
     shelf.appendChild(divContainer);
 }
 
@@ -83,11 +92,15 @@ function createAnotherElement(image, head, pricing,qty){
     button.textContent = "Remove";
 
     divContainer.className = "divContainer";
+    divContainer.id = head+"container";
+
     divImg.className = "itemImg"
     button.className="removeBtn"
     quantity.className= "quantity";
 
-    button.addEventListener("click", removeItem())
+    button.addEventListener("click", () => {
+        removeItem(head)
+    })
 
     divContainer.append(divImg);
     divContainer.append(title);
@@ -129,33 +142,35 @@ function addItem(name){
 
 //function to remove item from cart
 function removeItem(search){
-    if(search != undefined && isNaN(search) && search != ""){
-        const itemIndex = cart.findIndex(item => {
-            if(item.title == search){return true}
-        })
+    const itemIndex = cart.findIndex(item => {
+        if(item.title == search){return true}})
         
-        switch (itemIndex) {
-            case -1:
-                console.log("Item not found");
-                break;
-            default:
-                cart.splice(itemIndex, 1)
-                showCartItem()
-                totalCost();
-                break;
-        }
-    }else if(search != undefined &&
-                search !== "" &&
-                search < cart.length &&
-                search > -1
-            ){
-        cart.splice(search, 1)
-        showCartItem()
-        totalCost();
-    }else{
-        console.log("Item not found");
+    cart.splice(itemIndex, 1);
+    totalCost();
+
+    if(cart.length == 0){
+        document.getElementById("Info").textContent = "Your cart is empty. Purchase a merchandize"
     }
+    cart.forEach(item => {
+        if(item.qty == 1){
+            removeItemfromUI(search)
+        }
+    })
+
 }
+
+function removeItemfromUI(deletingItem){
+    const cartt = document.getElementById("cart")
+    const itemracks = document.querySelectorAll(".divContainer");
+    console.log(cart)
+    itemracks.forEach(itemrack => {
+        if(itemrack.id == deletingItem+"container"){
+            console.log(itemrack.id)
+            cartt.removeChild(itemrack)
+        }
+    })
+}
+
 
 //function to calculate total cost
 function totalCost(){
@@ -165,14 +180,4 @@ function totalCost(){
         total = Number(total.toFixed(2))
     })
     console.log(`%ctotal: $${total}`, `background-color: red; color: white;`)
-}
-
-//function to display items iin the cart
-function showCartItem(){
-    if(cart.length <= 0){
-        console.log(`Cart is empty`)
-    }
-    cart.forEach(item => {
-        console.log(`Title: ${item.title} Price: ${item.price}`)
-    })
 }
