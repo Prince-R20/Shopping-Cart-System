@@ -2,7 +2,7 @@
 *{
     /* box-sizing: border-box; */
     font-family: 'Courier New', Courier, monospace;
-    font-family: cursive;
+    /* font-family: cursive; */
 
     --color: royalblue;
     --color-100: rgb(161, 185, 255);
